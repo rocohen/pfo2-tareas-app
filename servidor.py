@@ -50,7 +50,7 @@ app.wsgi_app = MethodOverrideMiddleware(app.wsgi_app)
 # ======================
 # Configuración del ORM
 # ======================
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tareas.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tareas.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicialización de la base de datos
 db = SQLAlchemy(app)
