@@ -7,31 +7,37 @@ from flask_sqlalchemy import SQLAlchemy
 # Clase Override para métodos HTTP 
 # que no son soportados por HTML forms
 # =====================================
-
 class MethodOverrideMiddleware:
     def __init__(self, app):
         self.app = app
-    
+
     def __call__(self, environ, start_response):
-        if environ['REQUEST_METHOD'] == 'POST':
-            # Parsear el body para obtener _method
+        if environ.get('REQUEST_METHOD') == 'POST':
             from io import BytesIO
             from urllib.parse import parse_qs
+
             try:
                 request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-            except ValueError:
+            except (ValueError, TypeError):
                 request_body_size = 0
-            
-            request_body = environ['wsgi.input'].read(request_body_size)
-            environ['wsgi.input'] = BytesIO(request_body)  # Reset stream
-            
-            # Parsear form data
-            form_data = parse_qs(request_body.decode())
-            method_override = form_data.get('_method', [None])[0]
-            
-            if method_override and method_override.upper() in ['PUT', 'DELETE', 'PATCH']:
-                environ['REQUEST_METHOD'] = method_override.upper()
-        
+
+            if request_body_size > 0:
+                try:
+                    # Leer el body sin romper si está vacío
+                    request_body = environ['wsgi.input'].read(request_body_size)
+                    # Resetear el stream para que Flask pueda volver a leerlo
+                    environ['wsgi.input'] = BytesIO(request_body)
+
+                    # Parsear formulario
+                    form_data = parse_qs(request_body.decode(errors="ignore"))
+                    method_override = form_data.get('_method', [None])[0]
+
+                    if method_override and method_override.upper() in ['PUT', 'DELETE', 'PATCH']:
+                        environ['REQUEST_METHOD'] = method_override.upper()
+                except Exception:
+                    # Si falla el parseo, no romper el flujo
+                    pass
+
         return self.app(environ, start_response)
 
 app = Flask(__name__)
@@ -47,6 +53,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tareas.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicialización de la base de datos
 db = SQLAlchemy(app)
+
+def inicializar_bd():
+    with app.app_context():
+        db.create_all()
+        print("Base de datos inicializada correctamente")
 
 # ======================
 # Modelos de la base de datos
@@ -455,6 +466,4 @@ def error_interno(e):
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(host='0.0.0.0', port=5000)
