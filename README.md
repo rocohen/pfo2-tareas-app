@@ -2,8 +2,6 @@
 
 REST API desarrollada con **Flask**, utilizando **SQLAlchemy** como ORM y **SQLite** como base de datos para la gestión de tareas de usuarios.
 
- - Ir a la aplicación: [Link](https://rocohen.github.io/pfo2-tareas-app)
-
 ## 📋 Descripción
 
 Esta aplicación web permite a los usuarios gestionar sus tareas personales a través de una interfaz REST API completa. La aplicación maneja autenticación de usuarios y operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para las tareas.
@@ -121,9 +119,11 @@ El proyecto incluye un **cliente de consola** (`cliente.py`) que despliega un me
 
 ```
 pfo2-tareas-app/
-├── servidor.py              # Aplicación principal Flask
-├── cliente.py               # Cliente de consola
-├── requirements.txt         # Dependencias del proyecto
+├── intance/
+|   ├── tarea.db 
+├── servidor.py             # Aplicación principal Flask
+├── cliente.py              # Cliente de consola
+├── requirements.txt        # Dependencias del proyecto
 ├── README.md               # Este archivo
 ├── templates/              # Templates HTML
 │   ├── base.html           # Template base
