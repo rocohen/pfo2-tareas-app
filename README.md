@@ -37,7 +37,7 @@ La aplicación permite realizar las siguientes operaciones:
 
 1. **Clonar el repositorio**
    ```bash
-   git clone <url-del-repositorio>
+   git clone https://github.com/rocohen/pfo2-tareas-app
    cd pfo2-tareas-app
    ```
 
