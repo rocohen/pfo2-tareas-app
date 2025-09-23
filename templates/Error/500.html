@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto text-center">
+        <!-- Número 500 -->
+        <div class="mb-6">
+            <h1 class="text-6xl font-bold text-red-600 mb-4">
+                500
+            </h1>
+        </div>
+
+        <!-- Icono de error del servidor -->
+        <div class="mx-auto h-16 w-16 mb-6">
+            <svg class="w-full h-full text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                      d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3V6a3 3 0 013-3h13.5a3 3 0 013 3v5.25a3 3 0 01-3 3m-13.5 0v6.75a3 3 0 003 3h7.5M12 10.5V12m0 1.5h.008v.008H12V13.5z">
+                </path>
+            </svg>
+        </div>
+
+        <!-- Título -->
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+            Error interno del servidor
+        </h2>
+
+        <!-- Mensaje de error -->
+        <div class="mb-8">
+            <p class="text-gray-600 mb-3">
+                Algo salió mal en nuestros servidores. Por favor, intentalo de nuevo más tarde.
+            </p>
+            {% if mensaje %}
+            <div class="bg-red-50 border border-red-200 rounded-md p-3 mb-3">
+                <p class="text-sm text-red-700">
+                    {{ mensaje }}
+                </p>
+            </div>
+            {% endif %}
+            <p class="text-sm text-gray-500">
+                Si el problema persiste, por favor contacta al administrador.
+            </p>
+        </div>
+
+        <!-- Botones -->
+        <div class="space-y-3">
+            <button onclick="location.reload()" 
+                    class="block w-full px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors">
+                Intentar de nuevo
+            </button>
+
+            <a href="{{ url_for('home') }}" 
+               class="block w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
+                Volver al Inicio
+            </a>
+
+            <button onclick="history.back()" 
+                    class="block w-full px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-md hover:bg-gray-300 transition-colors">
+                Ir Atrás
+            </button>
+        </div>
+
+        <!-- Enlaces adicionales -->
+        {% if session.username %}
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <a href="{{ url_for('get_tareas') }}" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                Ver mis tareas
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Información adicional -->
+        <div class="mt-8 text-xs text-gray-400">
+            <p>Código de error: 500 - Internal Server Error</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

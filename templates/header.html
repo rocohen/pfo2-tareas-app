@@ -1,0 +1,60 @@
+{% block header %}
+
+<header
+  class="bg-background-light dark:bg-background-dark/50 backdrop-blur-sm sticky top-0 z-10 border-b border-primary/20 dark:border-primary/30"
+>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-primary text-3xl"
+          >task_alt</span
+        >
+        <h1 class="text-xl font-bold text-[#1a202c] dark:text-white">
+          Tareas app
+        </h1>
+      </div>
+      <nav class="hidden md:flex items-center gap-8">
+        <a
+          class="text-sm font-medium text-[#4a5568] dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
+          href="#"
+          >Inicio</a
+        >
+        <a class="text-sm font-medium text-primary dark:text-primary" href="#"
+          >Tareas</a
+        >
+      </nav>
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <button
+            class="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-[#4a5568] dark:text-gray-300"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          {% if tareas %}
+          <span
+            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white text-xs font-bold"
+            >{{ tareas|length }}</span
+          >
+          {% else %}
+          <span
+            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white text-xs font-bold"
+            >0</span
+          >
+          {% endif %}
+        </div>
+        <div
+          class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined text-primary">person</span>
+        </div>
+        <div>
+          <a href="{{ url_for('logout') }}" class="text-sm font-medium text-[#4a5568] dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors hover:bg-primary/20 p-2 btn-logout">
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% endblock %}

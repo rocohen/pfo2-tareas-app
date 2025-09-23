@@ -1,0 +1,87 @@
+{% extends "base.html" %} {% block body %}
+{% if error %}
+<div id="alert-message" 
+     class="w-full max-w-md mx-auto mt-2 p-4 rounded-lg text-sm transition-opacity duration-500 ease-out bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-center"
+     role="alert">
+    {{ error }}
+</div>
+{% endif %}
+<main
+  class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 flex items-center justify-center"
+>
+  <div
+    class="bg-white dark:bg-background-dark rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 w-full max-w-md"
+  >
+    <h2
+      class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6"
+    >
+      Accedé a Tus Tareas
+    </h2>
+    <form class="space-y-6" id="auth-form" action="{{url_for('login')}}" method="POST">
+      <div>
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          for="username"
+          >Usuario</label
+        >
+        <div class="mt-1">
+          <input
+            class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background-light dark:bg-gray-800 text-gray-900 dark:text-white"
+            id="username"
+            name="username"
+            placeholder="Ingresá tu nombre de usuario"
+            required=""
+            type="text"
+          />
+        </div>
+      </div>
+      <div>
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          for="password"
+          >Contraseña</label
+        >
+        <div class="mt-1">
+          <input
+            class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background-light dark:bg-gray-800 text-gray-900 dark:text-white"
+            id="password"
+            name="password"
+            placeholder="Ingresá tu contraseña"
+            required=""
+            type="password"
+          />
+        </div>
+      </div>
+      <div class="space-y-4">
+        <button
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          type="submit" onclick="setActionForm('login')"
+        >
+          Iniciar Sesión
+        </button>
+        <button
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
+          type="submit" onclick="setActionForm('registrar')"
+        >
+          Registrarse
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  function setActionForm(action) {
+    let authForm = document.getElementById('auth-form');
+    if (action === 'login') {
+      authForm.action = "{{url_for('login')}}";
+      authForm.method = 'POST';
+      authForm.submit();
+    } else if (action === 'registrar') {
+      authForm.action = "{{url_for('registrar')}}";
+      authForm.method = 'POST';
+      authForm.submit();
+    }
+  }
+</script>
+{% endblock %}

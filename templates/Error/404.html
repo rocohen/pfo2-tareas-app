@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto text-center">
+        <!-- Número 404 -->
+        <div class="mb-6">
+            <h1 class="text-6xl font-bold text-gray-800 mb-4">
+                404
+            </h1>
+        </div>
+
+        <!-- Icono de error -->
+        <div class="mx-auto h-16 w-16 mb-6">
+            <svg class="w-full h-full text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                      d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z">
+                </path>
+            </svg>
+        </div>
+
+        <!-- Título -->
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+            Página no encontrada
+        </h2>
+
+        <!-- Mensaje de error -->
+        <div class="mb-8">
+            <p class="text-gray-600 mb-3">
+                La página que buscás no existe o ha sido movida.
+            </p>
+            {% if mensaje %}
+            <div class="bg-red-50 border border-red-200 rounded-md p-3 mb-3">
+                <p class="text-sm text-red-700">
+                    {{ mensaje }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Botones -->
+        <div class="space-y-3">
+            <a href="{{ url_for('home') }}" 
+               class="block w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
+                Volver al Inicio
+            </a>
+
+            <button onclick="history.back()" 
+                    class="block w-full px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-md hover:bg-gray-300 transition-colors">
+                Ir Atrás
+            </button>
+        </div>
+
+        <!-- Enlaces adicionales -->
+        {% if session.username %}
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <a href="{{ url_for('get_tareas') }}" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                Ver mis tareas
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

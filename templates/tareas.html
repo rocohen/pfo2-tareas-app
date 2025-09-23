@@ -1,0 +1,237 @@
+{% extends "base.html" %} {% block body %} {% include "header.html" %}
+<!-- ...existing code... -->
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold text-[#1a202c] dark:text-white">
+      Bienvenida/o, {{ usuario }}
+    </h2>
+    <p class="mt-2 text-base text-[#4a5568] dark:text-gray-400">
+      Estas son tus tareas.
+    </p>
+    {% if error or mensaje %}
+    <div
+      id="alert-message"
+      class="mt-4 p-4 rounded-lg text-sm transition-opacity duration-500 ease-out {% if error %}bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400{% else %}bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400{% endif %}"
+      role="alert"
+    >
+      {{ error or mensaje }}
+    </div>
+    {% endif %}
+    <form action="{{ url_for('add_tarea') }}" method="POST" id="task-form">
+      <div
+        class="mt-8 bg-white dark:bg-background-dark/80 p-6 rounded-xl shadow-sm border border-primary/20 dark:border-primary/30"
+      >
+        <h3 class="text-lg font-semibold text-[#1a202c] dark:text-white">
+          Agregar nueva tarea
+        </h3>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label
+              class="text-sm font-medium text-[#4a5568] dark:text-gray-400 mb-1"
+              for="description"
+              >Descripción de la tarea</label
+            >
+            <input
+              class="bg-background-light dark:bg-background-dark/50 border border-primary/30 dark:border-primary/40 rounded focus:ring-primary focus:border-primary block w-full p-2.5 text-[#1a202c] dark:text-white placeholder:text-[#a0aec0] dark:placeholder:text-gray-500"
+              id="description"
+              name="description"
+              placeholder="Ej: Diseñar la nueva landing page"
+              type="text"
+              required
+            />
+          </div>
+          <div class="flex flex-col">
+            <label
+              class="text-sm font-medium text-[#4a5568] dark:text-gray-400 mb-1"
+              for="done"
+              >Estado</label
+            >
+            <select
+              class="bg-background-light dark:bg-background-dark/50 border border-primary/30 dark:border-primary/40 rounded focus:ring-primary focus:border-primary block w-full p-2.5 text-[#1a202c] dark:text-white"
+              id="done"
+              name="done"
+            >
+              <option value="false">Pendiente</option>
+              <option value="true">Completada</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button
+            class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2"
+            type="submit"
+            onclick="setActionForm('add_tarea')"
+          >
+            <span class="material-symbols-outlined text-xl">add_circle</span>
+            Registrar tarea
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="mt-12">
+      <ul class="space-y-4">
+        {% if tareas %} {% for tarea in tareas %}
+        <li
+          class="bg-white dark:bg-background-dark/80 p-4 rounded-xl shadow-sm border border-primary/20 dark:border-primary/30 flex flex-col items-stretch gap-4"
+          data-id="{{ tarea.id }}"
+        >
+          <!-- Vista de la tarea normal (visible por defecto) -->
+          <div class="task-view">
+            <div class="flex items-center justify-between">
+              <div>
+                {% if tarea.done %}
+                <p
+                  class="font-semibold text-[#1a202c] dark:text-white line-through text-gray-500 dark:text-gray-400"
+                >
+                  {{ tarea.description }}
+                </p>
+                <span
+                  class="text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 py-0.5 px-2 rounded-full"
+                  >Completada</span
+                >
+                {% else %}
+                <p class="font-semibold text-[#1a202c] dark:text-white">
+                  {{ tarea.description }}
+                </p>
+                <span
+                  class="text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 py-0.5 px-2 rounded-full"
+                  >Pendiente</span
+                >
+                {% endif %}
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-[#4a5568] dark:text-gray-300 edit-button"
+                  data-tarea-id="{{ tarea.id }}"
+                >
+                  <span class="material-symbols-outlined text-lg">edit</span>
+                </button>
+                <form
+                  action="{{ url_for('delete_tarea', id=tarea.id) }}"
+                  method="POST"
+                  class="inline-block delete-form"
+                  data-tarea-id="{{ tarea.id }}"
+                >
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button
+                    type="submit"
+                    class="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-[#4a5568] dark:text-gray-300"
+                    data-tarea-id="{{ tarea.id }}"
+                    onclick="return confirm('¿Seguro que quieres eliminar esta tarea?')"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de edición de la tarea (oculto por defecto) -->
+          <div class="task-edit-form hidden">
+            <form
+              action="{{ url_for('put_tarea', id=tarea.id) }}"
+              method="POST"
+              class="edit-form"
+              data-tarea-id="{{ tarea.id }}"
+            >
+              <input type="hidden" name="_method" value="PUT" />
+              <div class="grid grid-cols-1 @md:grid-cols-2 gap-4">
+                <input
+                  class="bg-background-light dark:bg-background-dark/50 border border-primary/30 dark:border-primary/40 rounded focus:ring-primary focus:border-primary block w-full p-2.5 text-[#1a202c] dark:text-white placeholder:text-[#a0aec0] dark:placeholder:text-gray-500"
+                  name="description"
+                  type="text"
+                  value="{{ tarea.description }}"
+                  required
+                />
+                <select
+                  class="bg-background-light dark:bg-background-dark/50 border border-primary/30 dark:border-primary/40 rounded focus:ring-primary focus:border-primary block w-full p-2.5 text-[#1a202c] dark:text-white"
+                  name="done"
+                >
+                  <option
+                    value="false"
+                    {%
+                    if
+                    not
+                    tarea.done
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    Pendiente
+                  </option>
+                  <option value="true" {% if tarea.done %}selected{% endif %}>
+                    Completada
+                  </option>
+                </select>
+              </div>
+              <div class="flex items-center justify-end gap-2 mt-4">
+                <button
+                  type="button"
+                  class="cancel-edit text-sm font-medium text-[#4a5568] dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors py-2 px-4 rounded-lg"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-lg">save</span>
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </li>
+        {% endfor %} {% else %}
+        <p>No tenés tareas pendientes.</p>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+        // Se enlazan los botones de edición
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const li = button.closest('li');
+                li.querySelector('.task-view').classList.add('hidden');
+                li.querySelector('.task-edit-form').classList.remove('hidden');
+            });
+        });
+
+        // Se enlazan los botones de cancelar
+        document.querySelectorAll('.cancel-edit').forEach(button => {
+            button.addEventListener('click', () => {
+                const li = button.closest('li');
+                li.querySelector('.task-view').classList.remove('hidden');
+                li.querySelector('.task-edit-form').classList.add('hidden');
+            });
+        });
+    });
+
+  // Formulario para agregar tarea
+  function setActionForm(action) {
+    let taskForm = document.getElementById('task-form');
+    let taskField = document.getElementById('description');
+
+    // Validación del campo tarea
+    let tareaTexto = taskField.value.trim();
+    if (!tareaTexto) {
+      taskField.value = '';
+      return false;
+    }
+
+    if (action === 'add_tarea') {
+      taskForm.action = "{{url_for('add_tarea')}}";
+      taskForm.method = 'POST';
+      taskForm.submit();
+    }
+    return false;
+  }
+</script>
+{% endblock %}
