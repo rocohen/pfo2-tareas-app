@@ -1,3 +1,4 @@
+import os
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -55,9 +56,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 def inicializar_bd():
-    with app.app_context():
-        db.create_all()
-        print("Base de datos inicializada correctamente")
+    try:
+        with app.app_context():
+            # Verificar si la base de datos ya existe
+            db_exists = os.path.exists('tareas.db')
+            db.create_all()
+            
+            if not db_exists:
+                print("Base de datos inicializada correctamente")
+            else:
+                print("Base de datos verificada")
+                
+    except Exception as e:
+        print(f"Error al inicializar la base de datos: {e}")
 
 # ======================
 # Modelos de la base de datos
