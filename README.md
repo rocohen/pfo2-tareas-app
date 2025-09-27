@@ -6,6 +6,8 @@ REST API desarrollada con **Flask**, utilizando **SQLAlchemy** como ORM y **SQLi
 
 Esta aplicación web permite a los usuarios gestionar sus tareas personales a través de una interfaz REST API completa. La aplicación maneja autenticación de usuarios y operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para las tareas.
 
+Ver descripción completa en githubpages [Link](https://rocohen.github.io/pfo2-tareas-app/)
+
 ## ✨ Funcionalidades
 
 La aplicación permite realizar las siguientes operaciones:
